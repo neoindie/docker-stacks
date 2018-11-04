@@ -1,6 +1,6 @@
 version: "3.6"
 services:
-  gitea:
+  server:
     image: gitea/gitea:1.6
     ports: [] # use a proxy instead!
     volumes:
@@ -15,6 +15,17 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    environment:
+     - USER_UID=1000
+     - USER_GID=1000
+     - DB_TYPE=mysql
+     - DB_HOST=db:3306
+     - DB_NAME=gitea
+     - DB_USER=gitea
+     - DB_PASSWD=${MYSQL_PASSWORD}
+     - SSH_DOMAIN=${DOMAIN_SSH}
+     - ROOT_URL=https://${DOMAIN_WEB}/
+     - SECRET_KEY=${SECRET_KEY}
     labels:
       caddy_0.address: ${DOMAIN_WEB}
       caddy_0.targetport: "3000"
