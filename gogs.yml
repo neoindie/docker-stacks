@@ -18,3 +18,8 @@ services:
       caddy_0.targetport: "3000"
       caddy_1.address: ${DOMAIN_SSH}
       caddy_1.targetport: "22"
+
+networks:
+  default:
+    external: true
+    name: ${NETWORK_NAME}
