@@ -40,14 +40,8 @@ services:
         window: 120s
     command: mongod --smallfiles --oplogSize 128
     volumes:
-      - wekan-data:/data/db
-      - wekan-dump:/dump
-
-volumes:
-  wekan-data:
-    driver: rexray/dobs
-  wekan-dump:
-    driver: rexray/dobs
+      - ${DB_DATA_DIR}:/data/db
+      - ${DB_DUMP_DIR}:/dump
 
 networks:
   default:

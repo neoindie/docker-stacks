@@ -6,7 +6,7 @@ services:
     image: gitea/gitea:1.6
     ports: [] # use a proxy instead!
     volumes:
-      - gitea-data:/data
+      - ${DATA_DIR}:/data
     depends_on:
       - db
     deploy:
@@ -51,10 +51,6 @@ services:
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
     volumes:
       - ${DB_DATA_DIR}:/var/lib/mysql
-
-volumes:
-  gitea-data:
-    driver: rexray/dobs
 
 networks:
   default:
