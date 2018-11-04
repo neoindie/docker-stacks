@@ -1,0 +1,55 @@
+version: "3.6"
+# based on https://github.com/wekan/wekan-mongodb/blob/master/docker-compose.yml
+
+services:
+  wekan:
+    image: quay.io/wekan/wekan:v1.69
+    ports: [] # use a proxy instead!
+    depends_on:
+      - wekandb
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      - ROOT_URL=https://${DOMAIN}
+      - MONGO_URL=mongodb://wekandb:27017/wekan
+      # Email settings are required in both MAIL_URL and Admin Panel,
+      #   see https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
+      #   For SSL in email, change smtp:// to smtps://
+      # NOTE: Special characters need to be url-encoded in MAIL_URL.
+      - MAIL_URL=smtp://user:pass@mailserver.example.com:25/
+      - MAIL_FROM='Example Wekan Support <support@example.com>'
+      - WITH_API=true
+      - BROWSER_POLICY_ENABLED=true
+      # When browser policy is enabled, HTML code at this Trusted URL can have iframe that embeds Wekan inside.
+      - TRUSTED_URL=''
+    labels:
+      caddy.address: ${DOMAIN}
+      caddy.targetport: "8080"
+
+  wekandb:
+    # All Wekan data is stored in MongoDB. For backup and restore, see:
+    #   https://github.com/wekan/wekan/wiki/Export-Docker-Mongo-Data
+    image: mongo:3.2.21
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    command: mongod --smallfiles --oplogSize 128
+    volumes:
+      - ${DB_DATA_DIR}:/data/db
+      - ${DB_DUMP_DIR}:/dump
+
+networks:
+  default:
+    external: true
+    name: ${NETWORK_NAME} # should match caddy's network
