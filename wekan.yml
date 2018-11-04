@@ -18,16 +18,10 @@ services:
     environment:
       - ROOT_URL=https://${DOMAIN}
       - MONGO_URL=mongodb://wekandb:27017/wekan
-      # Email settings are required in both MAIL_URL and Admin Panel,
-      #   see https://github.com/wekan/wekan/wiki/Troubleshooting-Mail
-      #   For SSL in email, change smtp:// to smtps://
-      # NOTE: Special characters need to be url-encoded in MAIL_URL.
-      - MAIL_URL=smtp://user:pass@mailserver.example.com:25/
-      - MAIL_FROM='Example Wekan Support <support@example.com>'
+      - MAIL_URL=${MAIL_URL}
+      - MAIL_FROM=${MAIL_FROM}
       - WITH_API=true
       - BROWSER_POLICY_ENABLED=true
-      # When browser policy is enabled, HTML code at this Trusted URL can have iframe that embeds Wekan inside.
-      - TRUSTED_URL=''
     labels:
       caddy.address: ${DOMAIN}
       caddy.targetport: "8080"
@@ -46,8 +40,14 @@ services:
         window: 120s
     command: mongod --smallfiles --oplogSize 128
     volumes:
-      - ${DB_DATA_DIR}:/data/db
-      - ${DB_DUMP_DIR}:/dump
+      - wekan-data:/data/db
+      - wekan-dump:/dump
+
+volumes:
+  wekan-data:
+    driver: rexray/dobs
+  wekan-dump:
+    driver: rexray/dobs
 
 networks:
   default:

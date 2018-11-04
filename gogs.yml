@@ -1,4 +1,6 @@
 version: "3.6"
+# Unmaintained
+
 services:
   gogs:
     image: gogs/gogs:0.11.66
