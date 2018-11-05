@@ -31,10 +31,8 @@ services:
      - ROOT_URL=https://${DOMAIN_WEB}/
      - SECRET_KEY=${SECRET_KEY}
     labels:
-      caddy_0.address: ${DOMAIN_WEB}
-      caddy_0.targetport: "3000"
-      caddy_1.address: ${DOMAIN_SSH}
-      caddy_1.targetport: "22"
+      caddy.address: ${DOMAIN_WEB}
+      caddy.targetport: "3000"
 
   db:
     image: mariadb:10
