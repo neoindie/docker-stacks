@@ -17,6 +17,8 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
+    ports:
+     - 22:22
     environment:
      - USER_UID=1000
      - USER_GID=1000
